@@ -1,0 +1,62 @@
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
+const Results = () => {
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const location = useLocation();
+  const { score } = location.state || {}; // Retrieve the score from state
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+      const response = await fetch("http://127.0.0.1:5000/result", {
+        method: "POST", // Method is POST
+        headers: {
+          "Content-Type": "application/json", // Sending JSON data
+        },
+        body: JSON.stringify({ score, name }), // Convert JavaScript object to JSON string
+      });
+      // Redirect to home page
+      navigate("/");
+  };
+
+  return (
+    <div className="flex justify-center items-center min-h-[90vh]">
+      <div className="result-container max-w-xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+        <h2 className="text-2xl font-semibold mb-4 text-center">
+          Quiz Results
+        </h2>
+        <p className="text-lg mb-4 text-center text-black">
+          Your final score is: {score}
+        </p>
+
+        {/* Form for entering name */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="name" className="block text-lg font-semibold">
+              Enter your name:
+            </label>
+            <input
+              type="text"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full p-2 mt-2 border border-gray-300 rounded-md"
+              required
+            />
+          </div>
+          <div>
+            <button
+              type="submit"
+              className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-400 transition"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Results;
